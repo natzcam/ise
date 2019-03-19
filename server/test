@@ -3,4 +3,4 @@
 project_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$project_path"
 
-./mvnw test
+./mvnw compile test

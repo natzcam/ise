@@ -9,7 +9,6 @@ import org.hl7.fhir.r4.model.Subscription;
 import ca.uhn.fhir.jpa.subscription.module.cache.SubscriptionLoader;
 import ca.uhn.fhir.rest.api.RequestTypeEnum;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
-import ca.uhn.fhir.rest.api.server.ResponseDetails;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.interceptor.InterceptorAdapter;
 

@@ -9,19 +9,16 @@ class Resource<T> {
   constructor(private type: string, private http: HttpClient) {}
 
   search(query?: any, headers?: any): Observable<fhir.Bundle> {
-    return this.http.get<fhir.Bundle>(
-      `${environment.fhir_url}/${this.type}/_search`,
-      {
-        params: query,
-        headers: headers
-      }
-    );
+    return this.http.get<fhir.Bundle>(`${environment.fhir_url}/${this.type}`, {
+      params: query,
+      headers: headers
+    });
   }
 
   // return resources as list, without all the metadata
   resources(query?: any, headers?: any): Observable<T[]> {
     return this.http
-      .get<fhir.Bundle>(`${environment.fhir_url}/${this.type}/_search`, {
+      .get<fhir.Bundle>(`${environment.fhir_url}/${this.type}`, {
         params: query,
         headers: headers
       })

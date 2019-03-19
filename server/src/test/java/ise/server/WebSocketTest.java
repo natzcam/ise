@@ -33,9 +33,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import ise.server.SeedUtils;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.EncodingEnum;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 
@@ -57,7 +57,6 @@ public class WebSocketTest {
 	int port;
 
 	IGenericClient client;
-	IParser parser;
 	WebSocketClient wsClient;
 	String subId;
 	String patientId;
@@ -67,8 +66,7 @@ public class WebSocketTest {
 	@Before
 	public void before() throws Exception {
 		client = fhirContext.newRestfulGenericClient("http://localhost:" + port + "/fhir");
-		parser = fhirContext.newJsonParser();
-
+		client.setEncoding(EncodingEnum.JSON);
 		Patient patient = SeedUtils.fakePatient();
 		patientId = client.create().resource(patient).execute().getId().getIdPart();
 
@@ -83,7 +81,7 @@ public class WebSocketTest {
 
 		URI url = new URI("ws://localhost:" + port + "/websocket");
 		ClientUpgradeRequest request = new ClientUpgradeRequest();
-		socket = new SocketImplementation(subId, EncodingEnum.JSON);
+		socket = new SocketImplementation(subId);
 		Future<Session> connection = wsClient.connect(socket, url, request);
 
 		Session session = connection.get(2, TimeUnit.SECONDS);
@@ -140,7 +138,7 @@ public class WebSocketTest {
 		private boolean gotBound;
 		private String subsId;
 
-		public SocketImplementation(String theCriteria, EncodingEnum theEncoding) {
+		public SocketImplementation(String theCriteria) {
 			criteria = theCriteria;
 		}
 

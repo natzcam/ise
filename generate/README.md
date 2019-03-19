@@ -12,6 +12,9 @@ generate
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
 # Usage
 <!-- usage -->
 ```sh-session
@@ -26,8 +29,75 @@ USAGE
 ...
 ```
 <!-- usagestop -->
+```sh-session
+$ npm install -g generate
+$ generate COMMAND
+running command...
+$ generate (-v|--version|version)
+generate/0.0.0 win32-x64 node-v8.12.0
+$ generate --help [COMMAND]
+USAGE
+  $ generate COMMAND
+...
+```
+<!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`generate help [COMMAND]`](#generate-help-command)
+* [`generate patient [FILE]`](#generate-patient-file)
+* [`generate test [FILE]`](#generate-test-file)
+
+## `generate help [COMMAND]`
+
+display help for generate
+
+```
+USAGE
+  $ generate help [COMMAND]
+
+ARGUMENTS
+  COMMAND  command to show help for
+
+OPTIONS
+  --all  see all commands in CLI
+```
+
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src\commands\help.ts)_
+
+## `generate patient [FILE]`
+
+Generates a patient
+
+```
+USAGE
+  $ generate patient [FILE]
+
+OPTIONS
+  -b, --birthdate=birthdate  [default: 2018-08-22] birthdate
+  -f, --family=family        [default: Moore] family name
+  -g, --gender=male|female   [default: male] gender
+  -h, --help                 show CLI help
+  -n, --given=given          [default: Willy] given name
+```
+
+_See code: [src\commands\patient.ts](https://github.com/ise/generate/blob/v0.0.0/src\commands\patient.ts)_
+
+## `generate test [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ generate test [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src\commands\test.ts](https://github.com/ise/generate/blob/v0.0.0/src\commands\test.ts)_
+<!-- commandsstop -->
 * [`generate hello [FILE]`](#generate-hello-file)
 * [`generate help [COMMAND]`](#generate-help-command)
 * [`generate patient [FILE]`](#generate-patient-file)

@@ -1,25 +1,54 @@
 import {Command, flags} from '@oclif/command'
+import * as faker from 'faker'
+import * as moment from 'moment'
+
+import {patient} from '../services/fhir'
 
 export default class Patient extends Command {
   static description = 'Generates a patient'
 
   static flags = {
     help: flags.help({char: 'h'}),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
-    // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    family: flags.string({
+      char: 'f',
+      description: 'family name',
+      default: faker.name.lastName()
+    }),
+    given: flags.string({
+      char: 'n',
+      description: 'given name',
+      default: faker.name.firstName()
+    }),
+    gender: flags.string({
+      char: 'g',
+      description: 'gender',
+      options: ['male', 'female'],
+      default: faker.random.boolean() ? 'male' : 'female'
+    }),
+    birthdate: flags.string({
+      char: 'b',
+      description: 'birthdate',
+      default: moment(faker.date.past()).format('YYYY-MM-DD')
+    })
   }
 
-  static args = [{name: 'file'}]
-
   async run() {
-    const {args, flags} = this.parse(Patient)
+    const {flags} = this.parse(Patient)
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from C:\\Users\\LMPH-Cam\\dev\\ise\\generate\\src\\commands\\patient.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
-    }
+    const response = await patient.create({
+      resourceType: 'Patient',
+      active: true,
+      gender: flags.gender,
+      name: [
+        {
+          family: flags.family,
+          given: [flags.given]
+        }
+      ],
+      birthDate: flags.birthdate,
+      deceasedBoolean: false
+    })
+
+    this.log('Generated: ' + JSON.stringify(response.data))
   }
 }

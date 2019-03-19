@@ -29,9 +29,12 @@ export class PatientComponent implements OnInit {
 
     this.observations$ = route.params.pipe(
       switchMap(params =>
-        fhirService.observation.resources({
-          subject: 'Patient/' + params.id
-        })
+        fhirService.observation.resources(
+          {
+            subject: 'Patient/' + params.id
+          },
+          { 'Cache-Control': 'no-cache' }
+        )
       )
     );
 
@@ -63,8 +66,10 @@ export class PatientComponent implements OnInit {
           fhirService.subscription.create({
             criteria: 'Observation?subject=Patient/' + result[0],
             status: 'active',
+            reason: 'test',
             channel: {
-              type: 'websocket'
+              type: 'websocket',
+              payload: 'application/json'
             }
           }),
           of(result[1])

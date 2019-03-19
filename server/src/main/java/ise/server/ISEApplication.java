@@ -19,9 +19,9 @@ import ca.uhn.fhir.jpa.config.WebsocketDispatcherConfig;
 import ca.uhn.fhir.jpa.dao.DaoConfig;
 import ca.uhn.fhir.jpa.subscription.SubscriptionInterceptorLoader;
 import ca.uhn.fhir.jpa.subscription.module.cache.SubscriptionLoader;
+import ca.uhn.fhir.rest.api.EncodingEnum;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.RestfulServer;
-import ca.uhn.fhir.rest.server.interceptor.CorsInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.LoggingInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.spring.boot.autoconfigure.FhirProperties;
@@ -42,6 +42,9 @@ public class ISEApplication {
 	@Autowired
 	SubscriptionLoader loader;
 
+	@Autowired
+	SubscriptionInterceptorLoader subscriptionInterceptorLoader;
+
 	@Bean
 	@ConfigurationProperties("hapi.fhir.logging")
 	public LoggingInterceptor loggingInterceptor() {
@@ -58,6 +61,8 @@ public class ISEApplication {
 			server.registerInterceptor(loggingInterceptor());
 
 			server.setServerAddressStrategy(new HardcodedServerAddressStrategy(serverAddress));
+
+			subscriptionInterceptorLoader.registerInterceptors();
 		};
 	}
 

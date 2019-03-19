@@ -44,12 +44,12 @@ public class Seeder implements CommandLineRunner {
 	}
 
 	// schedule random insertion of fake observations
-	// @Scheduled(initialDelay = 120000, fixedRate = 60000)
+	@Scheduled(initialDelay = 120000, fixedRate = 60000)
 	public void seedObservation() {
 		List<String> patientIds = getPatientIds();
 		String randomPatientId = patientIds.get(SeedUtils.randomNumber(patientIds.size()));
 		int randomObservationId = SeedUtils.randomNumber(maxSampleObservations);
-		Observation observation = SeedUtils.fakeObservation(randomObservationId + ".json", randomPatientId);
+		Observation observation = SeedUtils.fakeObservation(randomObservationId + ".json", "1");
 		IIdType obsId = client.create().resource(observation).execute().getId();
 		log.info("Created fake observation: {}", obsId);
 	}
