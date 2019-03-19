@@ -16,9 +16,9 @@ import ca.uhn.fhir.parser.IParser;
 
 /**
  *
- * @author natc <nathaniel.camomot@legalmatch.com>
+ * @author natc <nathanielcamomot@gmail.com>
  */
-public final class SeedUtils {
+public final class TestUtils {
 
 	private static final Faker faker = new Faker();
 	private static final IParser parser = FhirContext.forR4().newJsonParser();
@@ -37,8 +37,8 @@ public final class SeedUtils {
 	}
 
 	public static Observation fakeObservation(String file, String patientId) {
-
-		Observation observation = parseObservation(file);
+		InputStream is = TestUtils.class.getClassLoader().getResourceAsStream(file);
+		Observation observation = parser.parseResource(Observation.class, is);
 
 		Reference reference = new Reference();
 		reference.setReference("Patient/" + patientId);
@@ -46,14 +46,5 @@ public final class SeedUtils {
 
 		observation.setPerformer(null);
 		return observation;
-	}
-
-	private static Observation parseObservation(String file) {
-		InputStream is = SeedUtils.class.getClassLoader().getResourceAsStream("observations/" + file);
-		return parser.parseResource(Observation.class, is);
-	}
-
-	public static int randomNumber(int n) {
-		return faker.random().nextInt(n);
 	}
 }

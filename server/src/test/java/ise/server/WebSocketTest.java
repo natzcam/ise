@@ -31,9 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import ise.server.SeedUtils;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.EncodingEnum;
@@ -41,11 +39,10 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 
 /**
  *
- * @author natc <nathaniel.camomot@legalmatch.com>
+ * @author natc <nathanielcamomot@gmail.com>
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
 public class WebSocketTest {
 
 	private static final Logger log = LoggerFactory.getLogger(WebSocketTest.class);
@@ -67,10 +64,10 @@ public class WebSocketTest {
 	public void before() throws Exception {
 		client = fhirContext.newRestfulGenericClient("http://localhost:" + port + "/fhir");
 		client.setEncoding(EncodingEnum.JSON);
-		Patient patient = SeedUtils.fakePatient();
+		Patient patient = TestUtils.fakePatient();
 		patientId = client.create().resource(patient).execute().getId().getIdPart();
 
-		Patient otherPatient = SeedUtils.fakePatient();
+		Patient otherPatient = TestUtils.fakePatient();
 		otherPatientId = client.create().resource(otherPatient).execute().getId().getIdPart();
 
 		Subscription subscription = createSubscription(patientId);

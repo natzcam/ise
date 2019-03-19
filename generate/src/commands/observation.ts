@@ -7,51 +7,72 @@ export default class Observation extends Command {
 
   static flags = {
     help: flags.help({char: 'h'}),
-    patient: flags.string({
-      char: 'p',
-      description: 'patient id',
-      required: true
-    }),
-    value: flags.string({
-      char: 'v',
-      description: 'value',
-      required: true
-    }),
     low: flags.string({
       char: 'l',
-      description: 'low',
-      required: true
+      description:
+        'low reference value, default: based on observation type chosen'
     }),
     high: flags.string({
       char: 'i',
-      description: 'high',
-      required: true
+      description:
+        'high reference value, default: based on observation type chosen'
     })
   }
 
-  async run() {
-    const {flags} = this.parse(Observation)
+  static args = [
+    {
+      name: 'type',
+      description: 'observation type',
+      options: [
+        'co2',
+        'creatinine',
+        'erythrocyte',
+        'gfr',
+        'glucose',
+        'heartrate',
+        'temperature'
+      ],
+      required: true
+    },
+    {
+      name: 'patient',
+      description: 'patient id',
+      required: true
+    },
+    {
+      name: 'value',
+      description: 'value of the observation',
+      required: true
+    }
+  ]
 
-    const response = await observation.create({
-      resourceType: 'Observation',
-      status: 'final',
-      subject: {
-        reference: 'Patient/' + flags.patient
-      },
-      valueQuantity: {
-        value: flags.value
-      },
-      referenceRange: [
-        {
-          low: {
-            value: flags.low
-          },
-          high: {
-            value: flags.high
-          }
+  async run() {
+    const {args, flags} = this.parse(Observation)
+    const obs = require('../sample/' + args.type + '.json')
+    obs.subject.reference = 'Patient/' + args.patient
+    obs.valueQuantity.value = args.value
+    // no performer for now
+    delete obs.performer
+    if (flags.low) {
+      if (obs.referenceRange[0].low) {
+        obs.referenceRange[0].low = {
+          value: flags.low
         }
-      ]
-    })
+      } else {
+        obs.referenceRange[0].low.value = flags.low
+      }
+    }
+
+    if (flags.high) {
+      if (obs.referenceRange[0].high) {
+        obs.referenceRange[0].high = {
+          value: flags.high
+        }
+      } else {
+        obs.referenceRange[0].high.value = flags.high
+      }
+    }
+    const response = await observation.create(obs)
 
     this.log('Generated: ' + JSON.stringify(response.data))
   }

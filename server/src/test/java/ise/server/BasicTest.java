@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -22,7 +21,6 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
 public class BasicTest {
 
 	private static final Logger log = LoggerFactory.getLogger(BasicTest.class);
@@ -42,7 +40,7 @@ public class BasicTest {
 
 	@Test
 	public void createAndReadPatient() {
-		Patient patient = SeedUtils.fakePatient();
+		Patient patient = TestUtils.fakePatient();
 		IIdType id = client.create().resource(patient).execute().getId();
 		log.info("Patient created: {}", id);
 
@@ -55,10 +53,10 @@ public class BasicTest {
 
 	@Test
 	public void createAndReadObservation() {
-		Patient patient = SeedUtils.fakePatient();
+		Patient patient = TestUtils.fakePatient();
 		IIdType patientId = client.create().resource(patient).execute().getId();
 
-		Observation observation = SeedUtils.fakeObservation("1.json", patientId.getIdPart());
+		Observation observation = TestUtils.fakeObservation("crea.json", patientId.getIdPart());
 
 		IIdType obsId = client.create().resource(observation).execute().getId();
 		log.info("Observation created: {}", obsId);

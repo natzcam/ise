@@ -70,7 +70,7 @@ var AppRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar color=\"primary\" class=\"mat-elevation-z2\">\r\n  <span>ISE</span>\r\n</mat-toolbar>\r\n<div fxLayout=\"row\">\r\n  <div class=\"patient-list\" fxLayout=\"column\" fxFlex=\"20\">\r\n    {{(patients | async)?.entry?.length}}\r\n    <mat-list>\r\n      <mat-list-item [routerLink]=\"['patient', pt.id]\" routerLinkActive=\"mat-elevation-z2\"\r\n        *ngFor=\"let pt of (patients | async)\">\r\n        {{pt.name[0].family}}\r\n      </mat-list-item>\r\n    </mat-list>\r\n  </div>\r\n  <div class=\"patient-card\" fxLayout=\"column\" fxFlex>\r\n    <router-outlet></router-outlet>\r\n  </div>\r\n</div>"
+module.exports = "<mat-toolbar color=\"primary\" class=\"mat-elevation-z2\">\r\n  <span>ISE</span>\r\n</mat-toolbar>\r\n<div fxLayout=\"row\">\r\n  <div class=\"patient-list\" fxLayout=\"column\" fxFlex=\"20\">\r\n    <mat-list>\r\n      <mat-list-item [routerLink]=\"['patient', pt.id]\" routerLinkActive=\"mat-elevation-z2\"\r\n        *ngFor=\"let pt of (patients | async)\">\r\n        {{pt.name[0].family}}\r\n      </mat-list-item>\r\n    </mat-list>\r\n  </div>\r\n  <div class=\"patient-card\" fxLayout=\"column\" fxFlex>\r\n    <router-outlet></router-outlet>\r\n  </div>\r\n</div>"
 
 /***/ }),
 
@@ -440,10 +440,10 @@ var PatientComponent = /** @class */ (function () {
             websocket$.next('bind ' + sub.id);
             return websocket$;
         }));
-        this.observations$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["merge"])(patientIdChanged$, webSocketPing$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (_) {
+        this.observations$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["merge"])(patientIdChanged$, webSocketPing$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(console.log), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (_) {
             return fhirService.observation.resources({
                 subject: 'Patient/' + route.snapshot.params.id
-            }, { 'Cache-Control': 'no-cache' });
+            });
         }));
     }
     PatientComponent.prototype.ngOnInit = function () { };

@@ -73,13 +73,11 @@ export class PatientComponent implements OnInit {
 
     this.observations$ = merge(patientIdChanged$, webSocketPing$).pipe(
       switchMap(_ =>
-        fhirService.observation.resources(
-          {
-            subject: 'Patient/' + route.snapshot.params.id
-          },
-          { 'Cache-Control': 'no-cache' }
-        )
-      )
+        fhirService.observation.resources({
+          subject: 'Patient/' + route.snapshot.params.id
+        })
+      ),
+      tap(console.log)
     );
   }
 

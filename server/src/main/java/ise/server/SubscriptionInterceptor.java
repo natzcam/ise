@@ -13,7 +13,7 @@ import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.interceptor.InterceptorAdapter;
 
 /**
- * Intercepts creation of subsciption
+ * Intercepts creation of subscription
  */
 public class SubscriptionInterceptor extends InterceptorAdapter {
 

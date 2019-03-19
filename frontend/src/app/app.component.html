@@ -3,7 +3,6 @@
 </mat-toolbar>
 <div fxLayout="row">
   <div class="patient-list" fxLayout="column" fxFlex="20">
-    {{(patients | async)?.entry?.length}}
     <mat-list>
       <mat-list-item [routerLink]="['patient', pt.id]" routerLinkActive="mat-elevation-z2"
         *ngFor="let pt of (patients | async)">
