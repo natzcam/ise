@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { iif, Observable, of, merge } from 'rxjs';
-import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { map, mergeMap, switchMap, tap, filter } from 'rxjs/operators';
 import { fhir } from 'src/app/models/fhir';
 import { FhirService } from 'src/app/services/fhir.service';
 import { environment } from 'src/environments/environment';
@@ -23,7 +23,7 @@ export class PatientComponent implements OnInit {
     );
 
     // triggered when patient id changes
-    const patientIdChanged$ = route.params;
+    const patientIdChanged$ = route.params.pipe(map(params => params.id));
 
     // triggered when websocket ping is received from a subscription
     // https://www.hl7.org/fhir/subscription.html#2.46.7.2
@@ -67,17 +67,28 @@ export class PatientComponent implements OnInit {
           deserializer: (e: MessageEvent) => e.data
         });
         websocket$.next('bind ' + sub.id);
-        return websocket$;
+        return websocket$.pipe(filter(message => message.startsWith('ping')));
       })
     );
 
     this.observations$ = merge(patientIdChanged$, webSocketPing$).pipe(
-      switchMap(_ =>
-        fhirService.observation.resources({
-          subject: 'Patient/' + route.snapshot.params.id
-        })
-      ),
-      tap(console.log)
+      tap(console.log),
+      switchMap(message => {
+        if (message.startsWith('ping')) {
+          return fhirService.observation.resources(
+            {
+              subject: 'Patient/' + route.snapshot.params.id
+            },
+            {
+              'Cache-Control': 'no-cache'
+            }
+          );
+        } else {
+          return fhirService.observation.resources({
+            subject: 'Patient/' + route.snapshot.params.id
+          });
+        }
+      })
     );
   }
 

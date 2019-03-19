@@ -8,7 +8,7 @@ class Resource<T> {
   constructor(private readonly type: string) {}
 
   search(query?: any, headers?: any): AxiosPromise<fhir.Bundle> {
-    return axios.get<fhir.Bundle>(`${url}/${this.type}/_search`, {
+    return axios.get<fhir.Bundle>(`${url}/${this.type}`, {
       params: query,
       headers
     })
@@ -23,8 +23,11 @@ class Resource<T> {
         headers
       }
     )
-
-    return bundle.entry.map((entry: any) => entry.resource)
+    if (bundle.total === 0 || !bundle.entry) {
+      return []
+    } else {
+      return bundle.entry.map((entry: any) => entry.resource)
+    }
   }
 
   read(id: any): AxiosPromise<T> {

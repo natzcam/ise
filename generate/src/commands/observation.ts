@@ -54,6 +54,9 @@ export default class Observation extends Command {
     // no performer for now
     delete obs.performer
     if (flags.low) {
+      if (!obs.referenceRange) {
+        obs.referenceRange = []
+      }
       if (obs.referenceRange[0].low) {
         obs.referenceRange[0].low = {
           value: flags.low
@@ -64,6 +67,9 @@ export default class Observation extends Command {
     }
 
     if (flags.high) {
+      if (!obs.referenceRange) {
+        obs.referenceRange = []
+      }
       if (obs.referenceRange[0].high) {
         obs.referenceRange[0].high = {
           value: flags.high

@@ -23,8 +23,13 @@ class Resource<T> {
         headers: headers
       })
       .pipe(
-        filter(bundle => bundle.total > 0),
-        map((bundle: any) => bundle.entry.map(entry => entry.resource))
+        map((bundle: any) => {
+          if (bundle.total === 0 || !bundle.entry) {
+            return [];
+          } else {
+            return bundle.entry.map(entry => entry.resource);
+          }
+        })
       );
   }
 
