@@ -12,11 +12,11 @@ import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.interceptor.InterceptorAdapter;
 
-public class Interceptor extends InterceptorAdapter {
+public class SubscriptionInterceptor extends InterceptorAdapter {
 
     private SubscriptionLoader loader;
 
-    public Interceptor(SubscriptionLoader loader) {
+    public SubscriptionInterceptor(SubscriptionLoader loader) {
         this.loader = loader;
     }
 

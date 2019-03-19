@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { iif, Observable, of } from 'rxjs';
+import { iif, Observable, of, merge } from 'rxjs';
 import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { fhir } from 'src/app/models/fhir';
 import { FhirService } from 'src/app/services/fhir.service';
@@ -16,30 +16,19 @@ export class PatientComponent implements OnInit {
   patient$: Observable<fhir.Patient>;
   subscription$: Observable<fhir.Subscription>;
   observations$: Observable<fhir.Observation[]>;
-  websocket$ = webSocket({
-    url: environment.fhir_ws_url,
-    serializer: (value: string) => value,
-    deserializer: (e: MessageEvent) => e.data
-  });
 
-  constructor(route: ActivatedRoute, private fhirService: FhirService) {
+  constructor(private route: ActivatedRoute, private fhirService: FhirService) {
     this.patient$ = route.params.pipe(
       switchMap(params => fhirService.patient.read(params.id))
     );
 
-    this.observations$ = route.params.pipe(
-      switchMap(params =>
-        fhirService.observation.resources(
-          {
-            subject: 'Patient/' + params.id
-          },
-          { 'Cache-Control': 'no-cache' }
-        )
-      )
-    );
+    // triggered when patient id changes
+    const patientIdChanged$ = route.params;
 
-    // find subscription for the patient, if none, then create one
-    this.subscription$ = route.params.pipe(
+    // triggered when websocket ping is received from a subscription
+    // https://www.hl7.org/fhir/subscription.html#2.46.7.2
+    const webSocketPing$ = route.params.pipe(
+      // find subscription for the patient
       switchMap(params =>
         fhirService.subscription
           .search(
@@ -57,12 +46,8 @@ export class PatientComponent implements OnInit {
       ),
       mergeMap(result =>
         iif(
-          () => {
-            console.log(
-              result[1] === null ? 'No sub, creating one' : 'Already has a sub'
-            );
-            return result[1] === null;
-          },
+          () => result[1] === null,
+          // if none, then create one
           fhirService.subscription.create({
             criteria: 'Observation?subject=Patient/' + result[0],
             status: 'active',
@@ -74,21 +59,28 @@ export class PatientComponent implements OnInit {
           }),
           of(result[1])
         )
+      ),
+      switchMap(sub => {
+        const websocket$ = webSocket({
+          url: environment.fhir_ws_url,
+          serializer: (value: string) => value,
+          deserializer: (e: MessageEvent) => e.data
+        });
+        websocket$.next('bind ' + sub.id);
+        return websocket$;
+      })
+    );
+
+    this.observations$ = merge(patientIdChanged$, webSocketPing$).pipe(
+      switchMap(_ =>
+        fhirService.observation.resources(
+          {
+            subject: 'Patient/' + route.snapshot.params.id
+          },
+          { 'Cache-Control': 'no-cache' }
+        )
       )
     );
-
-    this.subscription$.subscribe(sub => {
-      console.log('subscribe to subcription: ' + sub.id);
-      this.websocket$.next('bind ' + sub.id);
-    });
-
-    this.websocket$.subscribe(
-      msg => console.log('message received: ' + msg), // Called whenever there is a message from the server.
-      err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
-      () => console.log('complete') // Called when connection is closed (for whatever reason).
-    );
-
-    // route.params.pipe(tap(params => );
   }
 
   ngOnInit() {}

@@ -19,7 +19,6 @@ import ca.uhn.fhir.jpa.config.WebsocketDispatcherConfig;
 import ca.uhn.fhir.jpa.dao.DaoConfig;
 import ca.uhn.fhir.jpa.subscription.SubscriptionInterceptorLoader;
 import ca.uhn.fhir.jpa.subscription.module.cache.SubscriptionLoader;
-import ca.uhn.fhir.rest.api.EncodingEnum;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.LoggingInterceptor;
@@ -57,7 +56,7 @@ public class ISEApplication {
 			daoConfig.addSupportedSubscriptionType(Subscription.SubscriptionChannelType.WEBSOCKET);
 
 			server.registerInterceptor(new ResponseHighlighterInterceptor());
-			server.registerInterceptor(new Interceptor(loader));
+			server.registerInterceptor(new SubscriptionInterceptor(loader));
 			server.registerInterceptor(loggingInterceptor());
 
 			server.setServerAddressStrategy(new HardcodedServerAddressStrategy(serverAddress));
