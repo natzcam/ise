@@ -12,6 +12,9 @@ import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.interceptor.InterceptorAdapter;
 
+/**
+ * Intercepts creation of subsciption
+ */
 public class SubscriptionInterceptor extends InterceptorAdapter {
 
     private SubscriptionLoader loader;
@@ -24,6 +27,7 @@ public class SubscriptionInterceptor extends InterceptorAdapter {
     public boolean outgoingResponse(RequestDetails theRequestDetails, IBaseResource theResponseObject,
             HttpServletRequest theServletRequest, HttpServletResponse theServletResponse)
             throws AuthenticationException {
+        System.out.println(theRequestDetails.getOperation());
         if (theRequestDetails.getRequestType() == RequestTypeEnum.POST
                 && theResponseObject.getClass() == Subscription.class) {
             loader.syncSubscriptions();
