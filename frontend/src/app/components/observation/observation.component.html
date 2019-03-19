@@ -1,0 +1,32 @@
+<mat-card>
+  <mat-card-content>
+    <app-code [code]="observation?.code"></app-code>
+    <table mat-table [dataSource]="component">
+      <ng-container matColumnDef="result">
+        <th mat-header-cell *matHeaderCellDef> Value</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.valueQuantity.value}}
+          <span class="unit">{{element.valueQuantity.unit}}</span></td>
+      </ng-container>
+
+      <ng-container matColumnDef="interpretation">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header">Interpretation</span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <app-code *ngFor="let inter of element.interpretation" [code]="inter"></app-code>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="reference">
+        <th mat-header-cell *matHeaderCellDef> Reference </th>
+        <td mat-cell *matCellDef="let element">
+          <app-reference-range *ngFor="let range of element.referenceRange" [range]="range"></app-reference-range>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['result','interpretation', 'reference']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['result','interpretation', 'reference'];"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

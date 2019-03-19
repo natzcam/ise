@@ -1,0 +1,10 @@
+<mat-card *ngIf="patient$ | async as patient">
+  <mat-card-header>
+    <mat-card-title>{{patient | name}}</mat-card-title>
+    <mat-card-subtitle>{{patient.birthDate | date}} {{patient.gender | uppercase}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <app-observation class="observation" [observation]="obs" *ngFor="let obs of (observations$ | async)">
+    </app-observation>
+  </mat-card-content>
+</mat-card>

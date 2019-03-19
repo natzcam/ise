@@ -1,0 +1,17 @@
+<mat-toolbar color="primary" class="mat-elevation-z2">
+  <span>ISE</span>
+</mat-toolbar>
+<div fxLayout="row">
+  <div class="patient-list" fxLayout="column" fxFlex="20">
+    {{(patients | async)?.entry?.length}}
+    <mat-list>
+      <mat-list-item [routerLink]="['patient', pt.id]" routerLinkActive="mat-elevation-z2"
+        *ngFor="let pt of (patients | async)">
+        {{pt.name[0].family}}
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div class="patient-card" fxLayout="column" fxFlex>
+    <router-outlet></router-outlet>
+  </div>
+</div>
