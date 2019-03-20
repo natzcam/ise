@@ -19,12 +19,13 @@
 
 `npm install` - install dependencies
 
-`npm start` - run frontend dev server @ http://localhost:4200
+`npm start` - run frontend Angular4+ dev server @ http://localhost:4200
 
 ### Generation CLI
 1. Node v8
 
 `cd generation`
+
 `npm install` - install dependencies
 
 #### Generate patients
