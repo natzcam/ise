@@ -6,7 +6,7 @@
     <mat-list>
       <mat-list-item [routerLink]="['patient', pt.id]" routerLinkActive="mat-elevation-z2"
         *ngFor="let pt of (patients | async)">
-        {{pt.name[0].family}}
+        {{pt | name}}
       </mat-list-item>
     </mat-list>
   </div>

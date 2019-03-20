@@ -1,4 +1,6 @@
 import {Command, flags} from '@oclif/command'
+import * as jsonfile from 'jsonfile'
+import * as _ from 'lodash'
 
 import {observation} from '../services/fhir'
 
@@ -21,17 +23,8 @@ export default class Observation extends Command {
 
   static args = [
     {
-      name: 'type',
-      description: 'observation type',
-      options: [
-        'co2',
-        'creatinine',
-        'erythrocyte',
-        'gfr',
-        'glucose',
-        'heartrate',
-        'temperature'
-      ],
+      name: 'file',
+      description: 'sample observation file path',
       required: true
     },
     {
@@ -48,35 +41,18 @@ export default class Observation extends Command {
 
   async run() {
     const {args, flags} = this.parse(Observation)
-    const obs = require('../sample/' + args.type + '.json')
-    obs.subject.reference = 'Patient/' + args.patient
-    obs.valueQuantity.value = args.value
+    const obs = jsonfile.readFileSync(args.file)
+    _.set(obs, 'subject.reference', 'Patient/' + args.patient)
+    _.set(obs, 'valueQuantity.value', args.value)
     // no performer for now
     delete obs.performer
+
     if (flags.low) {
-      if (!obs.referenceRange) {
-        obs.referenceRange = []
-      }
-      if (obs.referenceRange[0].low) {
-        obs.referenceRange[0].low = {
-          value: flags.low
-        }
-      } else {
-        obs.referenceRange[0].low.value = flags.low
-      }
+      _.set(obs, 'referenceRange[0].low.value', flags.low)
     }
 
     if (flags.high) {
-      if (!obs.referenceRange) {
-        obs.referenceRange = []
-      }
-      if (obs.referenceRange[0].high) {
-        obs.referenceRange[0].high = {
-          value: flags.high
-        }
-      } else {
-        obs.referenceRange[0].high.value = flags.high
-      }
+      _.set(obs, 'referenceRange[0].high.value', flags.high)
     }
     const response = await observation.create(obs)
 

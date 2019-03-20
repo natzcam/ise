@@ -19,6 +19,7 @@ import { GlobalErrorHandler } from './services/error.handler';
 import { FhirService } from './services/fhir.service';
 import { ObservationComponent } from './components/observation/observation.component';
 import { ReferenceRangeComponent } from './components/reference-range/reference-range.component';
+import { CommentComponent } from './components/comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ReferenceRangeComponent } from './components/reference-range/reference-
     NamePipe,
     CodeComponent,
     ObservationComponent,
-    ReferenceRangeComponent
+    ReferenceRangeComponent,
+    CommentComponent
   ],
   imports: [
     BrowserModule,

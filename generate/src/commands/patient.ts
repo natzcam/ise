@@ -11,8 +11,7 @@ export default class Patient extends Command {
     help: flags.help({char: 'h'}),
     family: flags.string({
       char: 'f',
-      description: 'family name, default: random fake family name',
-      default: faker.name.lastName()
+      description: 'family name, default: random fake family name'
     }),
     given: flags.string({
       char: 'g',
@@ -22,33 +21,51 @@ export default class Patient extends Command {
     gender: flags.string({
       char: 'e',
       description: 'gender, default: random male or female',
-      options: ['male', 'female'],
-      default: faker.random.boolean() ? 'male' : 'female'
+      options: ['male', 'female']
     }),
     birthdate: flags.string({
       char: 'b',
-      description: 'birthdate, default: random date in the past',
-      default: moment(faker.date.past()).format('YYYY-MM-DD')
+      description: 'birthdate, default: random date in the past'
+    }),
+    seed: flags.integer({
+      char: 's',
+      description: 'seed x the parameter value'
     })
   }
 
   async run() {
     const {flags} = this.parse(Patient)
 
-    const response = await patient.create({
+    if (flags.seed) {
+      for (let i = 0; i < flags.seed; i++) {
+        const response = await patient.create(this.createPatient({}))
+        this.log('Generated: ' + JSON.stringify(response.data))
+      }
+    } else {
+      const response = await patient.create(this.createPatient(flags))
+      this.log('Generated: ' + JSON.stringify(response.data))
+    }
+  }
+
+  createPatient(flags: any) {
+    const lastName = flags.family || faker.name.lastName()
+    const firstName = flags.given || faker.name.firstName()
+    const gender = flags.gender || faker.random.boolean() ? 'male' : 'female'
+    const bd =
+      flags.birthdate || moment(faker.date.past()).format('YYYY-MM-DD')
+
+    return {
       resourceType: 'Patient',
       active: true,
-      gender: flags.gender,
+      gender,
       name: [
         {
-          family: flags.family,
-          given: [flags.given]
+          family: lastName,
+          given: firstName
         }
       ],
-      birthDate: flags.birthdate,
+      birthDate: bd,
       deceasedBoolean: false
-    })
-
-    this.log('Generated: ' + JSON.stringify(response.data))
+    }
   }
 }

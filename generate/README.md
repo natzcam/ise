@@ -44,8 +44,8 @@ USAGE
 # Commands
 <!-- commands -->
 * [`generate help [COMMAND]`](#generate-help-command)
-* [`generate patient [FILE]`](#generate-patient-file)
-* [`generate test [FILE]`](#generate-test-file)
+* [`generate observation FILE PATIENT VALUE`](#generate-observation-file-patient-value)
+* [`generate patient`](#generate-patient)
 
 ## `generate help [COMMAND]`
 
@@ -64,39 +64,45 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src\commands\help.ts)_
 
-## `generate patient [FILE]`
+## `generate observation FILE PATIENT VALUE`
+
+Generates an observation
+
+```
+USAGE
+  $ generate observation FILE PATIENT VALUE
+
+ARGUMENTS
+  FILE     sample observation file path
+  PATIENT  patient id
+  VALUE    value of the observation
+
+OPTIONS
+  -h, --help       show CLI help
+  -i, --high=high  high reference value, default: based on observation type chosen
+  -l, --low=low    low reference value, default: based on observation type chosen
+```
+
+_See code: [src\commands\observation.ts](https://github.com/ise/generate/blob/v0.0.0/src\commands\observation.ts)_
+
+## `generate patient`
 
 Generates a patient
 
 ```
 USAGE
-  $ generate patient [FILE]
+  $ generate patient
 
 OPTIONS
-  -b, --birthdate=birthdate  [default: 2018-08-22] birthdate
-  -f, --family=family        [default: Moore] family name
-  -g, --gender=male|female   [default: male] gender
+  -b, --birthdate=birthdate  birthdate, default: random date in the past
+  -e, --gender=male|female   gender, default: random male or female
+  -f, --family=family        family name, default: random fake family name
+  -g, --given=given          [default: Vena] given name, default: random fake given name
   -h, --help                 show CLI help
-  -n, --given=given          [default: Willy] given name
+  -s, --seed=seed            seed x the parameter value
 ```
 
 _See code: [src\commands\patient.ts](https://github.com/ise/generate/blob/v0.0.0/src\commands\patient.ts)_
-
-## `generate test [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ generate test [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\test.ts](https://github.com/ise/generate/blob/v0.0.0/src\commands\test.ts)_
 <!-- commandsstop -->
 * [`generate hello [FILE]`](#generate-hello-file)
 * [`generate help [COMMAND]`](#generate-help-command)

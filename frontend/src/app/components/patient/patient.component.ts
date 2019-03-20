@@ -75,9 +75,11 @@ export class PatientComponent implements OnInit {
       tap(console.log),
       switchMap(message => {
         if (message.startsWith('ping')) {
+          // if ping from websocket, fetch with no cache
           return fhirService.observation.resources(
             {
-              subject: 'Patient/' + route.snapshot.params.id
+              subject: 'Patient/' + route.snapshot.params.id,
+              _sort: '-date'
             },
             {
               'Cache-Control': 'no-cache'

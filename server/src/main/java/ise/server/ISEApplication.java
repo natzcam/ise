@@ -17,6 +17,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import ca.uhn.fhir.jpa.config.WebsocketDispatcherConfig;
 import ca.uhn.fhir.jpa.dao.DaoConfig;
+import ca.uhn.fhir.jpa.search.DatabaseBackedPagingProvider;
 import ca.uhn.fhir.jpa.subscription.SubscriptionInterceptorLoader;
 import ca.uhn.fhir.jpa.subscription.module.cache.SubscriptionLoader;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
@@ -54,7 +55,9 @@ public class ISEApplication {
 	FhirRestfulServerCustomizer customer() {
 		return (RestfulServer server) -> {
 			daoConfig.addSupportedSubscriptionType(Subscription.SubscriptionChannelType.WEBSOCKET);
-
+			daoConfig.setFetchSizeDefaultMaximum(20);
+			DatabaseBackedPagingProvider paging = (DatabaseBackedPagingProvider) server.getPagingProvider();
+			paging.setDefaultPageSize(20);
 			server.registerInterceptor(new ResponseHighlighterInterceptor());
 			server.registerInterceptor(new SubscriptionInterceptor(loader));
 			server.registerInterceptor(loggingInterceptor());
