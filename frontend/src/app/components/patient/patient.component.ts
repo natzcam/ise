@@ -87,7 +87,8 @@ export class PatientComponent implements OnInit {
           );
         } else {
           return fhirService.observation.resources({
-            subject: 'Patient/' + route.snapshot.params.id
+            subject: 'Patient/' + route.snapshot.params.id,
+            _sort: '-date'
           });
         }
       })

@@ -44,6 +44,7 @@ export default class Observation extends Command {
     const obs = jsonfile.readFileSync(args.file)
     _.set(obs, 'subject.reference', 'Patient/' + args.patient)
     _.set(obs, 'valueQuantity.value', args.value)
+    _.set(obs, 'effectiveDateTime', new Date().toISOString())
     // no performer for now
     delete obs.performer
 

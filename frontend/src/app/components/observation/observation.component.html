@@ -1,6 +1,9 @@
 <mat-card>
   <mat-card-content>
-    <app-code [code]="observation?.code"></app-code>
+    <mat-card-title>
+      <app-code [code]="observation?.code"></app-code>
+    </mat-card-title>
+    <mat-card-subtitle>{{observation.effectiveDateTime | date: 'medium'}}</mat-card-subtitle>
     <table mat-table [dataSource]="component">
       <ng-container matColumnDef="result">
         <th mat-header-cell *matHeaderCellDef> Value</th>
