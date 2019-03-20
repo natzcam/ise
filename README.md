@@ -1,6 +1,4 @@
-# ise
-
-### Server
+## Server
 1. Java SDK 8
 2. Apache Maven 3.5.0
 
@@ -10,25 +8,25 @@
 
 `./test`  - run tests
 
-`./run` - run modified [hapi fhir](http://hapifhir.io/) server @ http://localhost:8888/fhir
+`./run` - run [hapi fhir](http://hapifhir.io/) server at http://localhost:8888/fhir
 
-### Frontend
+## Frontend
 1. Node v8
 
 `cd frontend`
 
 `npm install` - install dependencies
 
-`npm start` - run frontend Angular4+ dev server @ http://localhost:4200
+`npm start` - run frontend Angular4+ dev server at http://localhost:4200
 
-### Generation CLI
+## Generation CLI
 1. Node v8
 
 `cd generation`
 
 `npm install` - install dependencies
 
-#### Generate patients
+### Generate patients
 ```sh
 $ ./bin/run patient -h
 Generates a patient
@@ -44,12 +42,13 @@ OPTIONS
   -h, --help                 show CLI help
   -s, --seed=seed            seed x the parameter value
 ```
-####Example:
+Example:
+
 `./bin/run patient -s 10` - seed 10 patients
 
 `./bin/run patient` - generate 1 randomized patient
 
-#### Generate observations
+### Generate observations
 ```sh
 $ ./bin/run observation -h
 Generates an observation
@@ -67,5 +66,13 @@ OPTIONS
   -i, --high=high  high reference value, default: based on observation type chosen
   -l, --low=low    low reference value, default: based on observation type chosen
 ```
-####Example:
+
+Example:
+
 `./bin/run observation samples/heartrate.json 35 70 -l 60 -i 200` - generate an observation based on samples/heartrate.json with 'Patient/35' and value of 70 beans/min, low reference value of 60 and high reference value of 200. Patient must exist first
+
+## Notes
+1. Scripts are all shell, so in windows, you need at least use Git Bash to easily run them
+2. Patients, Observations, Subscriptions are stored as FHIR resources using a customized [HAPI FHIR](http://hapifhir.io/) server.
+3. DB is H2 file-based database, no installation needed.
+4. When you load a patient view, a [Subscription](https://www.hl7.org/fhir/subscription.html) with criteria 'Observation?subject=Patient/{id}' is created, with channel as websocket. A websocket connection is then made following this specification https://www.hl7.org/fhir/subscription.html#2.46.7.2. If a ping is received, a refresh will be done in the background. There were tweaks which I had to make for websocket. Perhaps, communicate this back to HAPI FHIR project.
